@@ -18,20 +18,50 @@ function App() {
   const [title, setTitle] = useState("name");
 
   const getPerson = async () => {
+    const response = await fetch(url)
+    const data = await response.json()
+    // console.log(data.results[0].name);
 
+    // data destructuring
+    const person = data.results[0]
+    const { phone, email } = person
+    const { large: image } = person.picture
+    const { password } = person.login
+    const { first, last } = person.name
+    const {
+      dob: { age },
+    } = person
+    const {
+      street: { number, name },
+    } = person.location
+
+    const newPerson = {
+      image,
+      phone,
+      email,
+      password,
+      age,
+      street: `${number} ${name}`,
+      name: `${first} ${last}`,
+    }
+    setPerson(newPerson)
+    setLoading(false)
+    setTitle('name')
+    setValue(newPerson.name)
   }
 
   useEffect(() => {
-
+    getPerson()
   }, [])
 
   const handleValue = (e) => {
-    console.log(e.target);
-    // if (e.target.classList.contains('icon')) {
-    //   const newValue = e.target.dataset.label
-    //   setTitle(newValue)
-    //   setValue(person[newValue])
-    // }
+    // console.log(e.target);
+    if (e.target.classList.contains('icon')) {
+      const newValue = e.target.dataset.label
+      setTitle(newValue)
+      setValue(person[newValue])
+    }
+    // console.log(person.image);
   }
 
   return (
@@ -40,7 +70,7 @@ function App() {
       <div className="block">
         <div className="container">
           <img
-            src={(person && person.img) || defaultImage}
+            src={(person && person.image) || defaultImage}
             alt="image-block"
             className="user-img"
           />
